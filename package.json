@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/guardian/us-election-2020-notification-lambda/issues"
   },
-  "homepage": "https://github.com/guardian/us-election-2020-notification-lambda#readme"
+  "homepage": "https://github.com/guardian/us-election-2020-notification-lambda#readme",
+  "devDependencies": {
+    "@guardian/node-riffraff-artifact": "^0.1.9"
+  }
 }

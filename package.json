@@ -1,0 +1,19 @@
+{
+  "name": "us-election-2020-notification-lambda",
+  "version": "0.1.0",
+  "description": "An AWS Lambda for pushing mobile notifications for the US 2020 election",
+  "main": "notification-lambda.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guardian/us-election-2020-notification-lambda.git"
+  },
+  "author": "max.spencer@guardian.co.uk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guardian/us-election-2020-notification-lambda/issues"
+  },
+  "homepage": "https://github.com/guardian/us-election-2020-notification-lambda#readme"
+}

@@ -6,7 +6,7 @@ deployments:
     type: aws-lambda
     parameters:
       bucket: mobile-dist
-      functionNames: us-election-2020-notification-lambda-
+      functionNames: [us-election-2020-notification-lambda-]
       fileName: notification-lambda.zip
       prefixStack: false
     dependencies: [notification-lambda-cfn]

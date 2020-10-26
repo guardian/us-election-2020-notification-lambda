@@ -1,0 +1,19 @@
+stacks: [mobile]
+regions: [eu-west-1]
+
+deployments:
+  notification-lambda:
+    type: aws-lambda
+    parameters:
+      bucket: mobile-dist
+      functionNames: us-election-2020-notification-lambda-
+      fileName: notification-lambda.zip
+      prefixStack: false
+    dependencies: [notification-lambda-cfn]
+  notification-lambda-cfn:
+    type: cloud-formation
+    app: us-election-2020-notification-lambda
+    parameters:
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: us-election-2020-notification-lambda
+      templatePath: notification-lambda-cfn.yaml

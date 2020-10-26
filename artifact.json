@@ -1,0 +1,16 @@
+{
+    "projectName": "us-election-2020-notification-lambda",
+    "vcsURL": "https://github.com/guardian/us-election-2020-notification-lambda",
+    "actions": [
+      {
+        "action": "notification-lambda",
+        "path": "notification-lambda.js",
+        "compress": "zip"
+      },
+      {
+          "action": "notification-lambda-cfn",
+          "path": "notification-lambda-cfn.yaml",
+          "compress": false
+      }
+    ]
+  }

@@ -49,7 +49,7 @@ function postNotificationData(notificationData) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer us-elections-2020-8a102cbc-b556-4218-89ff-e4f89da9ba0e"
+            "Authorization": "Bearer xxx"
             //"Content-Length": Buffer.byteLength(notificationData)
         }
     }

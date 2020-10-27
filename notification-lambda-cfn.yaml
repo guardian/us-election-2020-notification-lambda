@@ -91,3 +91,21 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
       SourceArn: !GetAtt EventRule.Arn
+
+  LambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions: [!Ref AlarmTopic]
+      OKActions: [!Ref AlarmTopic]
+      AlarmDescription: !Sub Triggers if there are errors persisiting on ${Stage}
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 1
+      MetricName: "Errors"
+      Namespace: "AWS/Lambda"
+      Dimensions:
+        - Name: "FunctionName"
+          Value: !Sub us-election-2020-notification-lambda-${Stage}
+      Period: 3600
+      Statistic: Sum
+      Threshold: 1
+      TreatMissingData: breaching

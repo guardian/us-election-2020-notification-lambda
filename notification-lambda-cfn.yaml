@@ -13,6 +13,9 @@ Parameters:
     AllowedValues:
       - CODE
       - PROD
+  AlarmTopic:
+    Type: String
+    Description: The ARN of the SNS topic to send all the cloudwatch alarms to
 
 Resources:
   Role:

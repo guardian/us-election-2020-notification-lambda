@@ -49,7 +49,7 @@ function postNotificationData(notificationData) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer xxx"
+            "Authorization": "Bearer " + process.env.NOTIFICATION_API_KEY
             //"Content-Length": Buffer.byteLength(notificationData)
         }
     }

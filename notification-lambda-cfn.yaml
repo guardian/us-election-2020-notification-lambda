@@ -100,15 +100,36 @@ Resources:
     Properties:
       AlarmActions: [!Ref AlarmTopic]
       OKActions: [!Ref AlarmTopic]
-      AlarmDescription: !Sub Triggers if there are errors persisiting on ${Stage}
-      ComparisonOperator: GreaterThanThreshold
+      AlarmDescription: !Sub Alarm triggers if there is missing notification data, see runbook <<<Runbook|https://docs.google.com/document/d/1JQXFacHrAFB8_7fLthUkIdt1LPYTD99PxJOU_64rY2Y/edit?usp=sharing>>>
+      Metrics:
+        - Id: e1
+          Label: Error percentage of lambda
+          Expression: "100*(m1/m2)"
+        - Id: m1
+          Label: Number of errors for lambda
+          MetricStat:
+            Metric:
+              MetricName: Errors
+              Namespace: AWS/Lambda
+              Dimensions:
+                - Name: FunctionName
+                  Value: !Sub us-election-2020-notification-lambda-${Stage}
+            Period: 600
+            Stat: Sum
+          ReturnData: false
+        - Id: m2
+          Label: Number of invocations for lambda
+          MetricStat:
+            Metric:
+              MetricName: Invocations
+              Namespace: AWS/Lambda
+              Dimensions:
+                - Name: FunctionName
+                  Value: !Sub us-election-2020-notification-lambda-${Stage}
+            Period: 600
+            Stat: Sum
+          ReturnData: false
+      ComparisonOperator: GreaterThanOrEqualToThreshold
       EvaluationPeriods: 1
-      MetricName: "Errors"
-      Namespace: "AWS/Lambda"
-      Dimensions:
-        - Name: "FunctionName"
-          Value: !Sub us-election-2020-notification-lambda-${Stage}
-      Period: 3600
-      Statistic: Sum
       Threshold: 1
-      TreatMissingData: breaching
+      TreatMissingData: notBreaching

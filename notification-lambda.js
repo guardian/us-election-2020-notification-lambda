@@ -75,7 +75,7 @@ function postNotificationData(notificationData) {
 
         //create the request object with the callback with the result
         const req = https.request(requestParams, (res) => {
-          resolve(JSON.stringify(res.statusCode));
+          resolve(res.statusCode);
         });
 
         // handle the possible errors
@@ -101,9 +101,13 @@ exports.handler =  async function (event, context) {
     console.log("Got the notification data LETSSS GOOO: " + notificationData)
 
     if (process.env.SendingEnabled === "true") {
-        await postNotificationData(notificationData).then(response =>
-            console.log("NOTIFICATION DATA SENT SUCCESSFULLY, response: " + response)
-        ).catch(err =>
+        await postNotificationData(notificationData).then(response => {
+            if (response === 200) {
+                console.log("NOTIFICATION DATA SENT SUCCESSFULLY")
+            } else {
+                console.log("Failed to send notification, API returned: " + response)
+            }
+        }).catch(err =>
             console.log("ERROR SENDING NOTIFICATION DATA: " + err)
         )
     } else {

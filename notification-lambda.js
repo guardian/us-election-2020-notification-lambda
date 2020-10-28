@@ -83,7 +83,7 @@ exports.handler =  async function (event, _) {
         try {
             const response = await postNotificationData(notificationData);
             if (response === 200) {
-                console.log("Notification data sent successfully, notification id: " + response)
+                console.log("Notification data sent successfully")
             } else {
                 throw new Error("Failed to send notification, API returned: " + response)
             }

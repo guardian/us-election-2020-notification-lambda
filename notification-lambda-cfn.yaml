@@ -19,6 +19,13 @@ Parameters:
   NotificationApiKey:
     Description: A key sent in the Authorization header of requests made to the N10N mobile notifications server
     Type: String
+  SendingEnabled:
+    Type: String
+    Description: If set to true we will send notifications to users
+    AllowedValues:
+      - true
+      - false
+
 
 Resources:
   Role:
@@ -68,6 +75,7 @@ Resources:
           Stack: !Ref Stack
           App: !Ref App
           NOTIFICATION_API_KEY: !Ref NotificationApiKey
+          SendingEnabled: !Ref SendingEnabled
       FunctionName: !Sub us-election-2020-notification-lambda-${Stage}
       Handler: notification-lambda.handler
       MemorySize: 384

@@ -20,7 +20,7 @@ async function getLastUpdated() {
             console.log("Last updated: " + lastUpdatedTimestamp)
             return lastUpdatedTimestamp
         } else {
-            throw "S3 output body was not defined"  
+            throw "S3 output body was not defined"
         }
     })
 }
@@ -37,7 +37,7 @@ async function getNotificationData(lastUpdatedTimestamp) {
             console.log("Notification data: " + body)
             return body
         } else {
-            throw "S3 output body was not defined"  
+            throw "S3 output body was not defined"
         }
     })
 }
@@ -72,39 +72,41 @@ function postNotificationData(notificationData) {
     */
 
     return new Promise((resolve, reject) => {
-        
+
         //create the request object with the callback with the result
         const req = https.request(requestParams, (res) => {
           resolve(JSON.stringify(res.statusCode));
         });
-    
+
         // handle the possible errors
         req.on('error', (e) => {
           reject(e.message);
         });
-        
+
         //do the request
         req.write(notificationData);
-    
+
         //finish the request
         req.end();
       });
 }
 
-exports.handler =  async function(event, context) {
+exports.handler =  async function (event, context) {
     console.log("EVENT: \n" + JSON.stringify(event, null, 2))
-    
+
     const lastUpdatedTimestamp = await getLastUpdated()
 
     const notificationData = await getNotificationData(lastUpdatedTimestamp)
-    
+
     console.log("Got the notification data LETSSS GOOO: " + notificationData)
 
-    await postNotificationData(notificationData).then( response =>
-        console.log("NOTIFICATION DATA SENT SUCCESSFULLY, response: " + response)
-    ).catch( err =>
-        console.log("ERROR SENDING NOTIFICATION DATA: " + err)
-    )
-    
-    return context.logStreamName
+    if (process.env.SendingEnabled === "TRUE") {
+        await postNotificationData(notificationData).then(response =>
+            console.log("NOTIFICATION DATA SENT SUCCESSFULLY, response: " + response)
+        ).catch(err =>
+            console.log("ERROR SENDING NOTIFICATION DATA: " + err)
+        )
+    } else {
+        console.log("Sending notifications is disabled, to send notifiations set SendingEnabled environment variable to TRUE")
+    }
 }

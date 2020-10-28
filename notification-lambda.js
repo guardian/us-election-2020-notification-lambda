@@ -50,26 +50,8 @@ function postNotificationData(notificationData) {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + process.env.NOTIFICATION_API_KEY
-            //"Content-Length": Buffer.byteLength(notificationData)
         }
     }
-
-    /*
-    const request = https.request(requestParams, function(response) {
-        response.setEncoding('utf8');
-        response.on('data', function (chunk) {
-            console.log('NOTIFICATION DATA WAS SENT, response was: ' + chunk);
-            context.succeed();
-        });
-        response.on('error', function (e) {
-            console.log("ERROR SENDING NOTIFICATION DATA: " + e.message);
-            context.done(null, 'FAILURE');
-        });
-    });
-
-    request.write(notificationData)
-    request.end()
-    */
 
     return new Promise((resolve, reject) => {
 
@@ -91,26 +73,25 @@ function postNotificationData(notificationData) {
       });
 }
 
-exports.handler =  async function (event, context) {
-    console.log("EVENT: \n" + JSON.stringify(event, null, 2))
+exports.handler =  async function (event, _) {
 
-    const lastUpdatedTimestamp = await getLastUpdated()
+    const lastUpdatedTimestamp = await getLastUpdated();
 
-    const notificationData = await getNotificationData(lastUpdatedTimestamp)
-
-    console.log("Got the notification data LETSSS GOOO: " + notificationData)
+    const notificationData = await getNotificationData(lastUpdatedTimestamp);
 
     if (process.env.SendingEnabled === "true") {
-        await postNotificationData(notificationData).then(response => {
+        try {
+            const response = await postNotificationData(notificationData);
             if (response === 200) {
-                console.log("NOTIFICATION DATA SENT SUCCESSFULLY")
+                console.log("Notification data sent successfully, notification id: " + response)
             } else {
-                console.log("Failed to send notification, API returned: " + response)
+                throw new Error("Failed to send notification, API returned: " + response)
             }
-        }).catch(err =>
-            console.log("ERROR SENDING NOTIFICATION DATA: " + err)
-        )
+        } catch (err) {
+            console.log("Error sending notification data: " + err);
+            throw err
+        }
     } else {
-        console.log("Sending notifications is disabled, to send notifiations set SendingEnabled environment variable to true")
+        console.log("Sending notifications is disabled, to send notifications set SendingEnabled environment variable to true")
     }
 }

@@ -135,5 +135,5 @@ Resources:
           ReturnData: false
       ComparisonOperator: GreaterThanOrEqualToThreshold
       EvaluationPeriods: 1
-      Threshold: 1
+      Threshold: 100
       TreatMissingData: notBreaching

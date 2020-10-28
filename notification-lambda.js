@@ -100,13 +100,13 @@ exports.handler =  async function (event, context) {
 
     console.log("Got the notification data LETSSS GOOO: " + notificationData)
 
-    if (process.env.SendingEnabled === "TRUE") {
+    if (process.env.SendingEnabled === "true") {
         await postNotificationData(notificationData).then(response =>
             console.log("NOTIFICATION DATA SENT SUCCESSFULLY, response: " + response)
         ).catch(err =>
             console.log("ERROR SENDING NOTIFICATION DATA: " + err)
         )
     } else {
-        console.log("Sending notifications is disabled, to send notifiations set SendingEnabled environment variable to TRUE")
+        console.log("Sending notifications is disabled, to send notifiations set SendingEnabled environment variable to true")
     }
 }

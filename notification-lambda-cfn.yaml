@@ -20,11 +20,9 @@ Parameters:
     Description: A key sent in the Authorization header of requests made to the N10N mobile notifications server
     Type: String
   SendingEnabled:
-    Type: String
+    Type: Boolean
     Description: If set to true we will send notifications to users
-    AllowedValues:
-      - TRUE
-      - FALSE
+
 
 Resources:
   Role:

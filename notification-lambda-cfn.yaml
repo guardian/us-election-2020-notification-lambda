@@ -24,11 +24,13 @@ Mappings:
   StageVariables:
     CODE:
       AlarmActionsEnabled: FALSE
+      ScheduleStatus: ENABLED
       NotificationsEndpoint: "notification.notifications.code.dev-guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/max/"
       SendingEnabled: "true"
     PROD:
       AlarmActionsEnabled: TRUE
+      ScheduleStatus: DISABLED
       NotificationsEndpoint: "notification.notifications.guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"
       SendingEnabled: "false"
@@ -67,7 +69,7 @@ Resources:
                   - DataDirectory: !FindInMap [StageVariables, !Ref Stage, ElectionsDataDirectory]
               - Action:  s3:ListBucket
                 Effect: Allow
-                Resource: arn:aws:s3:::gdn-cdn/2020/11/us-general-election-data/*
+                Resource: arn:aws:s3:::gdn-cdn
 
   Function:
     Type: AWS::Lambda::Function
@@ -103,6 +105,7 @@ Resources:
   EventRule:
     Type: AWS::Events::Rule
     Properties:
+      State: !FindInMap [StageVariables, !Ref Stage, ScheduleStatus]
       ScheduleExpression: rate(2 minutes)
       Targets:
         - Id: !Sub NotificationLambda${Stage}Target

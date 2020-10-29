@@ -21,12 +21,14 @@ Mappings:
   StageVariables:
     CODE:
       AlarmActionsEnabled: FALSE
+      ScheduleStatus: ENABLED
       NotificationsApiKeyPath: "/notifications/CODE/mobile-notifications/notifications.api.secretKeys.2"
       NotificationsEndpoint: "notification.notifications.code.dev-guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/max/"
       SendingEnabled: "true"
     PROD:
-      AlarmActionsEnabled: FALSE
+      AlarmActionsEnabled: TRUE
+      ScheduleStatus: DISABLED
       NotificationsApiKeyPath: "/notifications/PROD/mobile-notifications/notifications.api.secretKeys.4"
       NotificationsEndpoint: "notification.notifications.guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"
@@ -111,6 +113,7 @@ Resources:
   EventRule:
     Type: AWS::Events::Rule
     Properties:
+      State: !FindInMap [StageVariables, !Ref Stage, ScheduleStatus]
       ScheduleExpression: rate(2 minutes)
       Targets:
         - Id: !Sub NotificationLambda${Stage}Target

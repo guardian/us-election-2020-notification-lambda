@@ -5,19 +5,21 @@ const https = require('https');
 // get reference to S3 client
 const s3 = new AWS.S3();
 const srcBucket = "gdn-cdn";
+const dataDirectory = process.env.ElectionsDataDirectory;
+const notificationsEndpoint = process.env.NotificationsEndpoint;
 
 async function getLastUpdated() {
-    const srcKey = "2020/11/us-general-election-data/max/last_updated.json";
+    const srcKey = `${dataDirectory}last_updated.json`;
     const params = {
         Bucket: srcBucket,
         Key: srcKey
     };
     return s3.getObject(params).promise().then(function(data) {
         if (data.Body) {
-            const body = data.Body.toString()
-            const lastUpdated = JSON.parse(body)
-            const lastUpdatedTimestamp = lastUpdated["time"]
-            console.log("Last updated: " + lastUpdatedTimestamp)
+            const body = data.Body.toString();
+            const lastUpdated = JSON.parse(body);
+            const lastUpdatedTimestamp = lastUpdated["time"];
+            console.log("Last updated: " + lastUpdatedTimestamp);
             return lastUpdatedTimestamp
         } else {
             throw "S3 output body was not defined"
@@ -26,15 +28,15 @@ async function getLastUpdated() {
 }
 
 async function getNotificationData(lastUpdatedTimestamp) {
-    const srcKey = "2020/11/us-general-election-data/max/data-out/" + lastUpdatedTimestamp + "/notification_data.json";
+    const srcKey = `${dataDirectory}data-out/${lastUpdatedTimestamp}/notification_data.json`;
     const params = {
         Bucket: srcBucket,
         Key: srcKey
     };
     return s3.getObject(params).promise().then(function(data) {
         if (data.Body) {
-            const body = data.Body.toString()
-            console.log("Notification data: " + body)
+            const body = data.Body.toString();
+            console.log("Notification data: " + body);
             return body
         } else {
             throw "S3 output body was not defined"
@@ -44,14 +46,14 @@ async function getNotificationData(lastUpdatedTimestamp) {
 
 function postNotificationData(notificationData) {
     const requestParams = {
-        host: "notification.notifications.code.dev-guardianapis.com",
+        host: notificationsEndpoint,
         path: "/push/topic",
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + process.env.NOTIFICATION_API_KEY
+            "Authorization": "Bearer " + process.env.NotificationApiKey
         }
-    }
+    };
 
     return new Promise((resolve, reject) => {
 
@@ -94,4 +96,4 @@ exports.handler =  async function (event, _) {
     } else {
         console.log("Sending notifications is disabled, to send notifications set SendingEnabled environment variable to true")
     }
-}
+};

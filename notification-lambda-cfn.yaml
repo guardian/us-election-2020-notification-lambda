@@ -72,7 +72,7 @@ Resources:
             Statement:
               Effect: Allow
               Action:
-                - ssm:GetParametersByPath
+                - ssm:GetParameter
               Resource: !Sub
                 - arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${Path}
                 - Path: !FindInMap [StageVariables, !Ref Stage, NotificationsApiKeyPath]

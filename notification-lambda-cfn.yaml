@@ -26,6 +26,12 @@ Parameters:
       - true
       - false
 
+Mappings:
+  StageVariables:
+    CODE:
+      AlarmActionsEnabled: FALSE
+    PROD:
+      AlarmActionsEnabled: TRUE
 
 Resources:
   Role:
@@ -110,6 +116,7 @@ Resources:
   LambdaAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
+      ActionsEnabled: !FindInMap [StageVariables, !Ref Stage, AlarmActionsEnabled]
       AlarmActions: [!Ref AlarmTopic]
       OKActions: [!Ref AlarmTopic]
       AlarmDescription: !Sub Alarm triggers if there is missing notification data, see runbook <<<Runbook|https://docs.google.com/document/d/1JQXFacHrAFB8_7fLthUkIdt1LPYTD99PxJOU_64rY2Y/edit?usp=sharing>>>

@@ -1,7 +1,6 @@
 // dependencies
 const AWS = require('aws-sdk');
 const https = require('https');
-const util = require('util');
 
 // get reference to S3 client
 const s3 = new AWS.S3();
@@ -47,12 +46,18 @@ async function getNotificationData(lastUpdatedTimestamp) {
     })
 }
 
-const getParam = util.promisify(parameterStore.getParameter);
+const getParam = param => new Promise((resolve, reject) =>
+    parameterStore.getParameter({ Name: param }, (err, data) => {
+        if (err) {
+            reject(err)
+        } else {
+            resolve(data)
+        }
+    })
+);
 
 async function postNotificationData(notificationData) {
-    const apiKey = await getParam({
-        Name: process.env.NotificationsApiKeyPath
-    });
+    const apiKey = await getParam(process.env.NotificationsApiKeyPath);
 
     const requestParams = {
         host: notificationsEndpoint,

@@ -29,7 +29,7 @@ Mappings:
       ElectionsDataDirectory: "2020/11/us-general-election-data/max/"
       SendingEnabled: "true"
     PROD:
-      AlarmActionsEnabled: FALSE
+      AlarmActionsEnabled: TRUE
       ScheduleStatus: DISABLED
       NotificationsEndpoint: "notification.notifications.guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"

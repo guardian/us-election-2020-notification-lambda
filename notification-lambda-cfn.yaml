@@ -30,7 +30,7 @@ Mappings:
       SendingEnabled: "true"
     PROD:
       AlarmActionsEnabled: TRUE
-      ScheduleStatus: DISABLED
+      ScheduleStatus: ENABLED
       NotificationsEndpoint: "notification.notifications.guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"
       SendingEnabled: "false"

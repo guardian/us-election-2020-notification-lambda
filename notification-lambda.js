@@ -47,11 +47,11 @@ async function getNotificationData(lastUpdatedTimestamp) {
 }
 
 const getParam = param => new Promise((resolve, reject) =>
-    parameterStore.getParameter({ Name: param }, (err, data) => {
+    parameterStore.getParameter({ Name: param, WithDecryption: true }, (err, data) => {
         if (err) {
             reject(err)
         } else {
-            resolve(data)
+            resolve(data.Parameter.Value)
         }
     })
 );

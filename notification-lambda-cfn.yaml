@@ -67,7 +67,7 @@ Resources:
                   - DataDirectory: !FindInMap [StageVariables, !Ref Stage, ElectionsDataDirectory]
               - Action:  s3:ListBucket
                 Effect: Allow
-                Resource: arn:aws:s3:::gdn-cdn/2020/11/us-general-election-data/*
+                Resource: arn:aws:s3:::gdn-cdn
 
   Function:
     Type: AWS::Lambda::Function

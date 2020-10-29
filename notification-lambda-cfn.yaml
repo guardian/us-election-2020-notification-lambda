@@ -19,19 +19,19 @@ Parameters:
   NotificationApiKey:
     Description: A key sent in the Authorization header of requests made to the N10N mobile notifications server
     Type: String
-  SendingEnabled:
-    Type: String
-    Description: If set to true we will send notifications to users
-    AllowedValues:
-      - true
-      - false
 
 Mappings:
   StageVariables:
     CODE:
       AlarmActionsEnabled: FALSE
+      NotificationsEndpoint: "notification.notifications.code.dev-guardianapis.com"
+      ElectionsDataDirectory: "2020/11/us-general-election-data/max/"
+      SendingEnabled: "true"
     PROD:
       AlarmActionsEnabled: TRUE
+      NotificationsEndpoint: "notification.notifications.guardianapis.com"
+      ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"
+      SendingEnabled: "false"
 
 Resources:
   Role:
@@ -60,13 +60,14 @@ Resources:
           PolicyDocument:
             Statement:
               - Action:
-                  - s3:PutObject
                   - s3:GetObject
                 Effect: Allow
-                Resource: arn:aws:s3:::gdn-cdn/2020/11/us-general-election-data/max/*
+                Resource: !Sub
+                  - arn:aws:s3:::gdn-cdn/${DataDirectory}*
+                  - DataDirectory: !FindInMap [StageVariables, !Ref Stage, ElectionsDataDirectory]
               - Action:  s3:ListBucket
                 Effect: Allow
-                Resource: arn:aws:s3:::gdn-cdn/2020/11/us-general-election-data/max/*
+                Resource: arn:aws:s3:::gdn-cdn/2020/11/us-general-election-data/*
 
   Function:
     Type: AWS::Lambda::Function
@@ -80,8 +81,10 @@ Resources:
           Stage: !Ref Stage
           Stack: !Ref Stack
           App: !Ref App
-          NOTIFICATION_API_KEY: !Ref NotificationApiKey
-          SendingEnabled: !Ref SendingEnabled
+          NotificationApiKey: !Ref NotificationApiKey
+          SendingEnabled: !FindInMap [StageVariables, !Ref Stage, SendingEnabled]
+          NotificationsEndpoint: !FindInMap [StageVariables, !Ref Stage, NotificationsEndpoint]
+          ElectionsDataDirectory: !FindInMap [StageVariables, !Ref Stage, ElectionsDataDirectory]
       FunctionName: !Sub us-election-2020-notification-lambda-${Stage}
       Handler: notification-lambda.handler
       MemorySize: 384

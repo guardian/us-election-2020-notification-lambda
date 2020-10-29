@@ -1,12 +1,15 @@
 // dependencies
 const AWS = require('aws-sdk');
 const https = require('https');
+const util = require('util');
 
 // get reference to S3 client
 const s3 = new AWS.S3();
+const parameterStore = new AWS.SSM();
 const srcBucket = "gdn-cdn";
 const dataDirectory = process.env.ElectionsDataDirectory;
 const notificationsEndpoint = process.env.NotificationsEndpoint;
+
 
 async function getLastUpdated() {
     const srcKey = `${dataDirectory}last_updated.json`;
@@ -44,14 +47,20 @@ async function getNotificationData(lastUpdatedTimestamp) {
     })
 }
 
-function postNotificationData(notificationData) {
+const getParam = util.promisify(parameterStore.getParameter);
+
+async function postNotificationData(notificationData) {
+    const apiKey = await getParam({
+        Name: process.env.NotificationsApiKeyPath
+    });
+
     const requestParams = {
         host: notificationsEndpoint,
         path: "/push/topic",
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + process.env.NotificationApiKey
+            "Authorization": "Bearer " + apiKey
         }
     };
 

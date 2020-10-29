@@ -84,10 +84,12 @@ exports.handler =  async function (event, _) {
     if (process.env.SendingEnabled === "true") {
         try {
             const response = await postNotificationData(notificationData);
-            if (response === 200) {
+            if (response === 200 || response === 201) {
                 console.log("Notification data sent successfully")
+            } else if (response === 400) {
+                console.log("This notification has been sent before, try using a unique id")
             } else {
-                console.log("Failed to send notification, API returned: " + response)
+                throw new Error("Failed to send notification, API returned: " + response)
             }
         } catch (err) {
             console.log("Error sending notification data: " + err);

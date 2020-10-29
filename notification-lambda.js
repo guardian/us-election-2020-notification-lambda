@@ -85,7 +85,7 @@ exports.handler =  async function (event, _) {
             if (response === 200) {
                 console.log("Notification data sent successfully")
             } else {
-                throw new Error("Failed to send notification, API returned: " + response)
+                console.log("Failed to send notification, API returned: " + response)
             }
         } catch (err) {
             console.log("Error sending notification data: " + err);

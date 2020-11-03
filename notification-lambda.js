@@ -4,9 +4,11 @@ const https = require('https');
 
 // get reference to S3 client
 const s3 = new AWS.S3();
+const parameterStore = new AWS.SSM();
 const srcBucket = "gdn-cdn";
 const dataDirectory = process.env.ElectionsDataDirectory;
 const notificationsEndpoint = process.env.NotificationsEndpoint;
+
 
 async function getLastUpdated() {
     const srcKey = `${dataDirectory}last_updated.json`;
@@ -44,14 +46,26 @@ async function getNotificationData(lastUpdatedTimestamp) {
     })
 }
 
-function postNotificationData(notificationData) {
+const getParam = param => new Promise((resolve, reject) =>
+    parameterStore.getParameter({ Name: param, WithDecryption: true }, (err, data) => {
+        if (err) {
+            reject(err)
+        } else {
+            resolve(data.Parameter.Value)
+        }
+    })
+);
+
+async function postNotificationData(notificationData) {
+    const apiKey = await getParam(process.env.NotificationsApiKeyPath);
+
     const requestParams = {
         host: notificationsEndpoint,
         path: "/push/topic",
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + process.env.NotificationApiKey
+            "Authorization": "Bearer " + apiKey
         }
     };
 
@@ -84,10 +98,12 @@ exports.handler =  async function (event, _) {
     if (process.env.SendingEnabled === "true") {
         try {
             const response = await postNotificationData(notificationData);
-            if (response === 200) {
+            if (response === 200 || response === 201) {
                 console.log("Notification data sent successfully")
+            } else if (response === 400) {
+                console.log("This notification has been sent before, try using a unique id")
             } else {
-                console.log("Failed to send notification, API returned: " + response)
+                throw new Error("Failed to send notification, API returned: " + response)
             }
         } catch (err) {
             console.log("Error sending notification data: " + err);

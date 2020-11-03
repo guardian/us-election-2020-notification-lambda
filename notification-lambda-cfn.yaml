@@ -16,21 +16,20 @@ Parameters:
   AlarmTopic:
     Type: String
     Description: The ARN of the SNS topic to send all the cloudwatch alarms to
-  NotificationApiKey:
-    Description: A key sent in the Authorization header of requests made to the N10N mobile notifications server
-    Type: String
 
 Mappings:
   StageVariables:
     CODE:
       AlarmActionsEnabled: FALSE
       ScheduleStatus: ENABLED
+      NotificationsApiKeyPath: "/notifications/CODE/mobile-notifications/notifications.api.secretKeys.2"
       NotificationsEndpoint: "notification.notifications.code.dev-guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/max/"
       SendingEnabled: "true"
     PROD:
       AlarmActionsEnabled: TRUE
       ScheduleStatus: ENABLED
+      NotificationsApiKeyPath: "/notifications/PROD/mobile-notifications/notifications.api.secretKeys.4"
       NotificationsEndpoint: "notification.notifications.guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"
       SendingEnabled: "false"
@@ -70,6 +69,15 @@ Resources:
               - Action:  s3:ListBucket
                 Effect: Allow
                 Resource: arn:aws:s3:::gdn-cdn
+        - PolicyName: ssm
+          PolicyDocument:
+            Statement:
+              Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Sub
+                - arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${Path}
+                - Path: !FindInMap [StageVariables, !Ref Stage, NotificationsApiKeyPath]
 
   Function:
     Type: AWS::Lambda::Function
@@ -83,7 +91,7 @@ Resources:
           Stage: !Ref Stage
           Stack: !Ref Stack
           App: !Ref App
-          NotificationApiKey: !Ref NotificationApiKey
+          NotificationsApiKeyPath: !FindInMap [StageVariables, !Ref Stage, NotificationsApiKeyPath]
           SendingEnabled: !FindInMap [StageVariables, !Ref Stage, SendingEnabled]
           NotificationsEndpoint: !FindInMap [StageVariables, !Ref Stage, NotificationsEndpoint]
           ElectionsDataDirectory: !FindInMap [StageVariables, !Ref Stage, ElectionsDataDirectory]

@@ -114,7 +114,7 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       State: !FindInMap [StageVariables, !Ref Stage, ScheduleStatus]
-      ScheduleExpression: rate(10 minutes)
+      ScheduleExpression: rate(2 minutes)
       Targets:
         - Id: !Sub NotificationLambda${Stage}Target
           Arn: !GetAtt Function.Arn

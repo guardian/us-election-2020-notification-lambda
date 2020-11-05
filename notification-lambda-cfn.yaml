@@ -28,7 +28,7 @@ Mappings:
       SendingEnabled: "true"
     PROD:
       AlarmActionsEnabled: TRUE
-      ScheduleStatus: ENABLED
+      ScheduleStatus: DISABLED
       NotificationsApiKeyPath: "/notifications/PROD/mobile-notifications/notifications.api.secretKeys.4"
       NotificationsEndpoint: "notification.notifications.guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"

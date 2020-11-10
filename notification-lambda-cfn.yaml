@@ -21,18 +21,18 @@ Mappings:
   StageVariables:
     CODE:
       AlarmActionsEnabled: FALSE
-      ScheduleStatus: ENABLED
+      ScheduleStatus: DISABLED
       NotificationsApiKeyPath: "/notifications/CODE/mobile-notifications/notifications.api.secretKeys.2"
       NotificationsEndpoint: "notification.notifications.code.dev-guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/max/"
-      SendingEnabled: "true"
+      SendingEnabled: "false"
     PROD:
-      AlarmActionsEnabled: TRUE
-      ScheduleStatus: ENABLED
+      AlarmActionsEnabled: FALSE
+      ScheduleStatus: DISABLED
       NotificationsApiKeyPath: "/notifications/PROD/mobile-notifications/notifications.api.secretKeys.4"
       NotificationsEndpoint: "notification.notifications.guardianapis.com"
       ElectionsDataDirectory: "2020/11/us-general-election-data/prod/"
-      SendingEnabled: "true"
+      SendingEnabled: "false"
 
 Resources:
   Role:
